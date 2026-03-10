@@ -34,4 +34,4 @@ python app.py
 https://ai-resume-analyzer-v02b.onrender.com
 
 ## Author
-Smita Singh
+sakshi kumari
