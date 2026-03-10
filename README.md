@@ -31,7 +31,7 @@ pip install flask pdfminer.six
 python app.py
 
 5. Open in browser
-http://127.0.0.1:5000
+https://ai-resume-analyzer-v02b.onrender.com
 
 ## Author
 Smita Singh
