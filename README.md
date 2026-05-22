@@ -19,7 +19,7 @@ AI Resume Analyzer is a web application that analyzes resumes and extracts techn
 ## How to Run
 
 1. Clone the repository
-git clone https://github.com/yourusername/AI-Resume-Analyzer.git
+git clone https://github.com/sakshi778718/AI-Resume-Analyzer.git
 
 2. Go to the project folder
 cd AI-Resume-Analyzer
@@ -31,7 +31,7 @@ pip install flask pdfminer.six
 python app.py
 
 5. Open in browser
-https://ai-resume-analyzer-v02b.onrender.com
+https://ai-resume-analyzer-1-3kb9.onrender.com
 
 ## Author
 sakshi kumari
