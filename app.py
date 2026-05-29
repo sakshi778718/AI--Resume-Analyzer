@@ -1,4 +1,8 @@
-from flask import Flask, request, render_template_string
+# =========================
+# FILE: app.py
+# =========================
+
+from flask import Flask, request, render_template
 from pdfminer.high_level import extract_text
 import os
 import re
@@ -8,145 +12,45 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+ALLOWED_EXTENSIONS = {'pdf'}
+
 skills_db = [
-"python","java","c++","javascript","html","css","react",
-"node","flask","django","sql","mongodb","machine learning",
-"data science","deep learning","tensorflow","git","docker"
+    "python",
+    "java",
+    "c++",
+    "javascript",
+    "html",
+    "css",
+    "react",
+    "node",
+    "flask",
+    "django",
+    "sql",
+    "mongodb",
+    "machine learning",
+    "data science",
+    "deep learning",
+    "tensorflow",
+    "git",
+    "docker",
+    "rest api"
 ]
 
-HTML_PAGE = """
 
-<!DOCTYPE html>
-<html>
+def allowed_file(filename):
 
-<head>
-
-<title>AI Resume Analyzer</title>
-
-<style>
-
-body{
-font-family: Arial;
-background:#eef2f7;
-text-align:center;
-padding:40px;
-}
-
-.container{
-background:white;
-padding:30px;
-border-radius:10px;
-width:65%;
-margin:auto;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
-
-h1{
-color:#333;
-}
-
-input,textarea{
-width:80%;
-padding:10px;
-margin:10px;
-}
-
-button{
-padding:10px 20px;
-background:#007bff;
-border:none;
-color:white;
-cursor:pointer;
-border-radius:5px;
-}
-
-button:hover{
-background:#0056b3;
-}
-
-.result{
-margin-top:30px;
-}
-
-ul{
-list-style:none;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>AI Resume Analyzer</h1>
-
-<form method="POST" enctype="multipart/form-data">
-
-<input type="file" name="resume" required>
-
-<br>
-
-<textarea name="job_desc" placeholder="Paste Job Description Here"></textarea>
-
-<br>
-
-<button type="submit">Analyze Resume</button>
-
-</form>
-
-{% if score is not none %}
-
-<div class="result">
-
-<h2>Resume Score: {{score}}%</h2>
-
-<h2>ATS Match Score: {{ats}}%</h2>
-
-<h3>Detected Skills</h3>
-
-<ul>
-{% for skill in skills %}
-<li>{{skill}}</li>
-{% endfor %}
-</ul>
-
-<h3>Missing Skills (Skill Gap)</h3>
-
-<ul>
-{% for skill in missing %}
-<li>{{skill}}</li>
-{% endfor %}
-</ul>
-
-<h3>Suggestions to Improve Resume</h3>
-
-<ul>
-{% for tip in tips %}
-<li>{{tip}}</li>
-{% endfor %}
-</ul>
-
-</div>
-
-{% endif %}
-
-</div>
-
-</body>
-
-</html>
-
-"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def extract_skills(text):
 
     text = text.lower()
+
     found = []
 
     for skill in skills_db:
+
         if skill in text:
             found.append(skill)
 
@@ -155,33 +59,36 @@ def extract_skills(text):
 
 def resume_score(skills):
 
-    return int((len(skills)/len(skills_db))*100)
+    return int((len(skills) / len(skills_db)) * 100)
 
 
 def ats_score(resume_text, job_desc):
 
-    resume_words = set(re.findall(r'\w+',resume_text.lower()))
-    job_words = set(re.findall(r'\w+',job_desc.lower()))
+    resume_words = set(
+        re.findall(r'\w+', resume_text.lower())
+    )
+
+    job_words = set(
+        re.findall(r'\w+', job_desc.lower())
+    )
 
     match = resume_words.intersection(job_words)
 
-    if len(job_words)==0:
+    if len(job_words) == 0:
         return 0
 
-    score = int((len(match)/len(job_words))*100)
-
-    return score
+    return int((len(match) / len(job_words)) * 100)
 
 
 def skill_gap(resume_skills, job_desc):
-
-    job_words = job_desc.lower()
 
     missing = []
 
     for skill in skills_db:
 
-        if skill in job_words and skill not in resume_skills:
+        if skill in job_desc.lower() and \
+           skill not in resume_skills:
+
             missing.append(skill)
 
     return missing
@@ -189,56 +96,75 @@ def skill_gap(resume_skills, job_desc):
 
 def suggestions(score, missing):
 
-    tips=[]
+    tips = []
 
-    if score<40:
-        tips.append("Add more technical skills to your resume.")
+    if score < 40:
+
+        tips.append(
+            "Add more technical skills to your resume."
+        )
 
     if missing:
-        tips.append("Consider learning these missing skills: " + ", ".join(missing))
 
-    tips.append("Add real projects related to your skills.")
+        tips.append(
+            "Consider learning these skills: " +
+            ", ".join(missing)
+        )
 
-    tips.append("Include GitHub links to your projects.")
+    tips.append(
+        "Add GitHub links to your projects."
+    )
 
-    tips.append("Use action words like Developed, Built, Implemented.")
+    tips.append(
+        "Use action verbs like Developed, Built, Implemented."
+    )
+
+    tips.append(
+        "Mention measurable achievements in projects."
+    )
 
     return tips
 
 
-@app.route("/",methods=["GET","POST"])
+@app.route("/", methods=["GET", "POST"])
 
 def home():
 
-    skills=[]
-    score=None
-    ats=None
-    missing=[]
-    tips=[]
+    skills = []
+    score = None
+    ats = None
+    missing = []
+    tips = []
 
-    if request.method=="POST":
+    if request.method == "POST":
 
-        file=request.files["resume"]
-        job_desc=request.form["job_desc"]
+        file = request.files["resume"]
 
-        path=os.path.join(UPLOAD_FOLDER,file.filename)
+        job_desc = request.form["job_desc"]
 
-        file.save(path)
+        if file and allowed_file(file.filename):
 
-        text=extract_text(path)
+            path = os.path.join(
+                UPLOAD_FOLDER,
+                file.filename
+            )
 
-        skills=extract_skills(text)
+            file.save(path)
 
-        score=resume_score(skills)
+            text = extract_text(path)
 
-        ats=ats_score(text,job_desc)
+            skills = extract_skills(text)
 
-        missing=skill_gap(skills,job_desc)
+            score = resume_score(skills)
 
-        tips=suggestions(score,missing)
+            ats = ats_score(text, job_desc)
 
-    return render_template_string(
-        HTML_PAGE,
+            missing = skill_gap(skills, job_desc)
+
+            tips = suggestions(score, missing)
+
+    return render_template(
+        "index.html",
         skills=skills,
         score=score,
         ats=ats,
@@ -247,5 +173,5 @@ def home():
     )
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     app.run(debug=True)
