@@ -1,104 +1,232 @@
 
-    from flask import Flask, request, render_template
-from pdfminer.high_level import extract_text
-import os
-import re
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
+    </style>
+</head>
+<body class="bg-[#f1f5f9] text-gray-800 antialiased min-h-screen flex flex-col font-sans">
 
-app = Flask(__name__)
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 px-6 h-14 flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-2.5">
+            <div class="bg-blue-600 text-white p-1.5 rounded-lg">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+            </div>
+            <span class="font-bold text-base text-gray-900 tracking-tight">
+                ResumeIntellect <span class="text-[10px] text-blue-600 bg-blue-50 font-bold px-1.5 py-0.5 rounded-full border border-blue-100">PRO</span>
+            </span>
+        </div>
+        <div class="flex items-center gap-4 text-xs font-medium text-gray-500">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Engine Active</span>
+        </div>
+    </header>
 
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        {% if score is none %}
+        <section class="lg:col-span-12 flex items-center justify-center min-h-[75vh]">
+            <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-md max-w-xl w-full text-center flex flex-col gap-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Analyze Your Resume Placement</h2>
+                    <p class="text-xs text-gray-400 mt-1">Upload your file to test compliance matrix benchmarks against active systems.</p>
+                </div>
 
-ALLOWED_EXTENSIONS = {'pdf'}
+                <form action="/" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5">
+                    
+                    <div class="border-2 border-dashed border-gray-200 hover:border-blue-500 transition-colors rounded-xl p-8 bg-gray-50/50 relative group cursor-pointer">
+                        <input type="file" name="resume" id="resume" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="p-3 bg-white rounded-xl shadow-xs border border-gray-100 text-blue-500 group-hover:scale-110 transition-transform">
+                                <i data-lucide="file-up" class="w-6 h-6"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700" id="file-label">Select or drop your resume document</p>
+                            <p class="text-xs text-gray-400">Supports PDF format</p>
+                        </div>
+                    </div>
 
-skills_db = [
-    "python", "java", "c++", "javascript", "html", "css", "react", "node",
-    "flask", "django", "sql", "mongodb", "machine learning", "data science",
-    "deep learning", "tensorflow", "git", "docker", "rest api"
-]
+                    <div class="text-left flex flex-col gap-1.5">
+                        <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Target Job Description</label>
+                        <textarea name="job_desc" rows="5" placeholder="Paste the target job description requirements here..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow resize-none" required></textarea>
+                    </div>
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Scan & Calculate Metrics
+                    </button>
+                </form>
+            </div>
+        </section>
 
-def extract_skills(text):
-    text = text.lower()
-    found = []
-    for skill in skills_db:
-        if skill in text:
-            found.append(skill)
-    return list(set(found))
+        {% else %}
+        
+        <section class="lg:col-span-4 flex flex-col gap-4">
+            <div class="bg-white rounded-2xl border border-gray-200/80 shadow-xs p-5 flex flex-col gap-5 sticky top-20">
+                
+                <div class="text-center border-b border-gray-100 pb-4">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Your ATS Score</span>
+                    <div class="text-5xl font-black text-blue-600 my-1.5">
+                        {{ ats }}<span class="text-base text-gray-300 font-normal">/100</span>
+                    </div>
+                    <span class="text-[11px] font-semibold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-100">
+                        Match Grade Accuracy: {{ score }}%
+                    </span>
+                </div>
 
-def resume_score(skills):
-    if not skills_db:
-        return 0
-    return int((len(skills) / len(skills_db)) * 100)
+                <div class="flex flex-col gap-1">
+                    <button onclick="switchTab('ats-parse')" id="btn-ats-parse" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left bg-blue-50/80 text-blue-700 font-semibold border border-blue-100/50">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 shrink-0"></i>
+                            <span>ATS Optimization Tips</span>
+                        </div>
+                        <span class="text-[10px] bg-blue-100 text-blue-800 font-medium px-2 py-0.5 rounded-full scale-90">{{ tips|length }} Items</span>
+                    </button>
 
-def ats_score(resume_text, job_desc):
-    resume_words = set(re.findall(r'\w+', resume_text.lower()))
-    job_words = set(re.findall(r'\w+', job_desc.lower()))
-    if len(job_words) == 0:
-        return 0
-    match = resume_words.intersection(job_words)
-    return int((len(match) / len(job_words)) * 100)
+                    <button onclick="switchTab('detected-skills')" id="btn-detected-skills" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="cpu" class="w-4 h-4 text-gray-400 shrink-0"></i>
+                            <span>Detected Skills</span>
+                        </div>
+                        <span class="text-[10px] bg-emerald-50 text-emerald-700 font-medium px-2 py-0.5 rounded-full scale-90">{{ skills|length }} Found</span>
+                    </button>
 
-def skill_gap(resume_skills, job_desc):
-    missing = []
-    for skill in skills_db:
-        if skill in job_desc.lower() and skill not in resume_skills:
-            missing.append(skill)
-    return missing
+                    <button onclick="switchTab('missing-skills')" id="btn-missing-skills" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500 shrink-0"></i>
+                            <span>Missing Keywords</span>
+                        </div>
+                        <span class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full scale-90">{{ missing|length }} Missing</span>
+                    </button>
+                </div>
 
-def suggestions(score, missing):
-    tips = []
-    if score < 40:
-        tips.append("Add more technical skills to your resume.")
-    if missing:
-        tips.append("Consider learning these skills: " + ", ".join(missing))
-    tips.append("Add GitHub links to your projects.")
-    tips.append("Use action verbs like Developed, Built, Implemented.")
-    tips.append("Mention measurable achievements in projects.")
-    return tips
+                <a href="/" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-center font-semibold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Scan Another Resume
+                </a>
+            </div>
+        </section>
 
+        <section class="lg:col-span-8 bg-white border border-gray-200/90 rounded-2xl shadow-xs flex flex-col overflow-hidden min-h-[500px]">
+            <div class="bg-gray-50/80 border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="folder-open" class="text-gray-400 w-4 h-4"></i>
+                    <h3 class="text-xs font-bold text-gray-700 tracking-wide uppercase">Analysis Metrics Window</h3>
+                </div>
+                <div id="issues-badge" class="text-xs font-semibold text-gray-500 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full shadow-2xs">
+                    Live Telemetry Ready
+                </div>
+            </div>
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    skills = []
-    score = None
-    ats = None
-    missing = []
-    tips = []
+            <div id="panel-ats-parse" class="tab-content-panel p-6 md:p-8 flex flex-col gap-6">
+                <div>
+                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="terminal" class="w-4 h-4 text-blue-500"></i> Keyword Compliance Metrics
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+                        Your resume was benchmarked against the semantic context of the target job description. Below are the key optimization steps generated by your matching score profile.
+                    </p>
+                </div>
 
-    if request.method == "POST":
-        file = request.files.get("resume")
-        # Fixed: Explicitly look for the correct 'job_desc' form field name
-        job_desc = request.form.get("job_desc", "")
+                <div class="bg-gray-50 rounded-xl p-6 border border-gray-100 flex flex-col gap-4">
+                    <div class="w-full bg-gray-200 h-2.5 rounded-full relative overflow-visible mt-2">
+                        <div class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: {{ ats if ats else 0 }}%"></div>
+                        <div class="absolute top-1/2 -translate-y-1/2 bg-emerald-600 border-2 border-white w-4 h-4 rounded-full shadow-md" style="left: {{ ats if ats else 0 }}%"></div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <h4 class="text-base font-bold text-gray-900">{{ ats }}% Overlap Accuracy Match</h4>
+                    </div>
+                </div>
 
-        if file and allowed_file(file.filename):
-            path = os.path.join(UPLOAD_FOLDER, file.filename)
-            file.save(path)
+                <div class="flex flex-col gap-2">
+                    <h3 class="text-xs font-bold text-gray-700 tracking-wide uppercase mb-1">Recommended Actions:</h3>
+                    {% for tip in tips %}
+                    <div class="flex items-start gap-3 p-3 bg-blue-50/40 border border-blue-100/60 rounded-xl text-xs text-gray-700">
+                        <i data-lucide="lightbulb" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i>
+                        <span>{{ tip }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            text = extract_text(path)
-            skills = extract_skills(text)
-            score = resume_score(skills)
-            ats = ats_score(text, job_desc)
-            missing = skill_gap(skills, job_desc)
-            tips = suggestions(score, missing)
+            <div id="panel-detected-skills" class="tab-content-panel p-6 md:p-8 flex flex-col gap-6 hidden">
+                <div>
+                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="cpu" class="w-4 h-4 text-emerald-500"></i> Identified Skills Profile
+                    </h2>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    {% for skill in skills %}
+                    <span class="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100 px-3 py-1 rounded-xl uppercase tracking-wide inline-flex items-center gap-1">
+                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> {{ skill }}
+                    </span>
+                    {% else %}
+                    <p class="text-xs text-gray-400 py-4">No database skills isolated from document body.</p>
+                    {% endfor %}
+                </div>
+            </div>
 
-            # Cleanup file locally right after calculation
-            if os.path.exists(path):
-                os.remove(path)
+            <div id="panel-missing-skills" class="tab-content-panel p-6 md:p-8 flex flex-col gap-6 hidden">
+                <div>
+                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-500"></i> Missing Keyword Gaps
+                    </h2>
+                </div>
+                <div class="flex flex-col gap-2">
+                    {% for item in missing %}
+                    <div class="flex items-center justify-between p-3.5 bg-rose-50/60 border border-rose-100 rounded-xl text-xs">
+                        <span class="text-rose-900 font-bold uppercase tracking-wider">{{ item }}</span>
+                        <span class="text-[10px] bg-white border border-rose-200 text-rose-600 font-bold px-2 py-0.5 rounded-md">Missing Focus Tag</span>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8 bg-emerald-50 text-emerald-800 rounded-xl border border-emerald-100 text-xs font-medium">
+                        Excellent! No critical skill keywords are missing against the job request.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
 
-    return render_template(
-        "index.html",
-        skills=skills,
-        score=score,
-        ats=ats,
-        missing=missing,
-        tips=tips
-    )
+    <script>
+        lucide.createIcons();
 
-# Fixed: Production server network listener
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+        const fileInput = document.getElementById('resume');
+        if(fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                if(e.target.files.length > 0) {
+                    document.getElementById('file-label').textContent = `Loaded: ${e.target.files[0].name}`;
+                    document.getElementById('file-label').classList.add('text-blue-600', 'font-bold');
+                }
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content-panel').forEach(panel => panel.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium";
+            });
+
+            document.getElementById(`panel-${tabId}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).className = "tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left bg-blue-50/80 text-blue-700 font-semibold border border-blue-100/50";
+            
+            const badge = document.getElementById('issues-badge');
+            if(tabId === 'missing-skills') {
+                badge.textContent = "Gaps Loaded";
+                badge.className = "text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-2.5 py-0.5 rounded-full";
+            } else if(tabId === 'detected-skills') {
+                badge.textContent = "Inventory Summary";
+                badge.className = "text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full";
+            } else {
+                badge.textContent = "Live Telemetry Ready";
+                badge.className = "text-xs font-semibold text-gray-500 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full";
+            }
+        }
+    </script>
+</body>
+</html>
