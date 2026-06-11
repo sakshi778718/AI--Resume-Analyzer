@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,57 +8,54 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Custom scrollbar matching premium dashboards */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; }
     </style>
 </head>
-<body class="bg-[#f1f5f9] text-gray-800 antialiased min-h-screen flex flex-col font-sans">
+<body class="bg-[#f8fafc] text-gray-800 antialiased min-h-screen flex flex-col font-sans">
 
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 px-6 h-14 flex items-center justify-between shadow-xs">
+    <header class="bg-white border-b border-gray-200/80 sticky top-0 z-50 px-6 h-16 flex items-center justify-between shadow-2xs">
         <div class="flex items-center gap-2.5">
-            <div class="bg-blue-600 text-white p-1.5 rounded-lg">
-                <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <div class="bg-blue-600 text-white p-2 rounded-xl">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
             </div>
-            <span class="font-bold text-base text-gray-900 tracking-tight">
-                ResumeIntellect <span class="text-[10px] text-blue-600 bg-blue-50 font-bold px-1.5 py-0.5 rounded-full border border-blue-100">PRO</span>
+            <span class="font-bold text-lg text-gray-900 tracking-tight">
+                ResumeIntellect <span class="text-xs text-blue-600 bg-blue-50 font-bold px-2 py-0.5 rounded-full border border-blue-100">ATS</span>
             </span>
         </div>
-        <div class="flex items-center gap-4 text-xs font-medium text-gray-500">
-            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Engine Active</span>
-        </div>
+        <div class="text-xs text-gray-400 font-mono hidden sm:block">Status: Live Engine</div>
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {% if not analyzed %}
-        <section class="lg:col-span-12 flex items-center justify-center min-h-[75vh]">
-            <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-md max-w-xl w-full text-center flex flex-col gap-6">
+        <section class="lg:col-span-12 flex items-center justify-center min-h-[70vh]">
+            <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-xs max-w-xl w-full text-center flex flex-col gap-6">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-900">Analyze Your Resume Placement</h2>
-                    <p class="text-xs text-gray-400 mt-1">Upload your file to test compliance matrix benchmarks against active systems.</p>
+                    <h2 class="text-xl font-bold text-gray-900">Resume Optimization Studio</h2>
+                    <p class="text-xs text-gray-400 mt-1">Scan your formatting profile integrity and keywords matching gaps in real-time.</p>
                 </div>
 
-                <form action="/analyze" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
+                <form action="/" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5">
                     <div class="border-2 border-dashed border-gray-200 hover:border-blue-500 transition-colors rounded-xl p-8 bg-gray-50/50 relative group cursor-pointer">
-                        <input type="file" name="resume" id="resume" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                        <input type="file" name="resume" id="resume" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
                         <div class="flex flex-col items-center gap-2">
-                            <div class="p-3 bg-white rounded-xl shadow-xs border border-gray-100 text-blue-500 group-hover:scale-110 transition-transform">
-                                <i data-lucide="file-up" class="w-6 h-6"></i>
+                            <div class="p-3 bg-white rounded-xl shadow-2xs border border-gray-100 text-blue-500 group-hover:scale-110 transition-transform">
+                                <i data-lucide="file-text" class="w-6 h-6"></i>
                             </div>
-                            <p class="text-sm font-semibold text-gray-700" id="file-label">Select or drop your resume document</p>
-                            <p class="text-xs text-gray-400">Supports PDF or DOCX format</p>
+                            <p class="text-sm font-semibold text-gray-700" id="file-label">Click to browse or drag PDF</p>
+                            <p class="text-xs text-gray-400">Strictly accepts .PDF format</p>
                         </div>
                     </div>
 
                     <div class="text-left flex flex-col gap-1.5">
-                        <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Target Job Description</label>
-                        <textarea name="job_description" rows="5" placeholder="Paste the target job description requirements here..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow resize-none" required></textarea>
+                        <label class="text-[11px] font-bold text-gray-500 tracking-wider uppercase">Target Job Description</label>
+                        <textarea name="job_desc" rows="6" placeholder="Paste the target job description requirements here..." class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow resize-none" required></textarea>
                     </div>
 
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i> Scan & Calculate Metrics
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Optimize My Resume
                     </button>
                 </form>
             </div>
@@ -66,155 +64,161 @@
         {% else %}
         
         <section class="lg:col-span-4 flex flex-col gap-4">
-            <div class="bg-white rounded-2xl border border-gray-200/80 shadow-xs p-5 flex flex-col gap-5 sticky top-20">
+            <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-5 sticky top-24 shadow-2xs">
                 
                 <div class="text-center border-b border-gray-100 pb-4">
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Your Score</span>
-                    <div class="text-5xl font-black text-[#e11d48] my-1.5">
-                        {{ score }}<span class="text-base text-gray-300 font-normal">/100</span>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Overall Match Score</span>
+                    <div class="text-5xl font-black text-blue-600 my-1.5">
+                        {{ ats }}<span class="text-base text-gray-300 font-normal">/100</span>
                     </div>
-                    <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">
-                        5 Issues Need Attention
+                    <span class="text-[11px] font-semibold {% if ats >= 70 %}text-emerald-600 bg-emerald-50 border-emerald-100{% else %}text-amber-600 bg-amber-50 border-amber-100{% endif %} px-2.5 py-0.5 rounded-full border">
+                        {% if ats >= 70 %}Strong Compliance{% else %}Needs Optimization{% endif %}
                     </span>
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    
                     <div class="flex flex-col gap-1">
-                        <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-1 px-1">
-                            <span>Content</span>
-                            <span class="text-amber-600 font-bold bg-amber-50 px-1.5 py-0.5 rounded-xs">63%</span>
+                        <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-1.5 px-1">
+                            <span>Analysis Metrics</span>
                         </div>
 
-                        <button onclick="switchTab('ats-parse')" id="btn-ats-parse" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left bg-blue-50/80 text-blue-700 font-semibold border border-blue-100/50">
+                        <button onclick="switchTab('ats-main')" id="btn-ats-main" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left bg-blue-50/80 text-blue-700 font-semibold border border-blue-100/50">
                             <div class="flex items-center gap-2">
-                                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 shrink-0"></i>
-                                <span>ATS Parse Rate</span>
+                                <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0"></i>
+                                <span>ATS Keyword Match</span>
                             </div>
-                            <span class="text-[10px] bg-emerald-100/80 text-emerald-800 font-medium px-2 py-0.5 rounded-full scale-90">No issues</span>
+                            <span class="text-[11px] font-bold text-blue-600 bg-white border border-blue-100 px-1.5 py-0.2 rounded-md">{{ ats }}%</span>
                         </button>
 
-                        <button onclick="switchTab('quantifying-impact')" id="btn-quantifying-impact" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium">
+                        <button onclick="switchTab('skills-db')" id="btn-skills-db" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium">
                             <div class="flex items-center gap-2">
-                                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 shrink-0"></i>
-                                <span>Quantifying Impact</span>
+                                <i data-lucide="cpu" class="w-4 h-4 text-gray-400 shrink-0"></i>
+                                <span>Detected Skills</span>
                             </div>
-                            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-medium px-2 py-0.5 rounded-full scale-90">No issues</span>
+                            <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full scale-90">{{ skills|length }} found</span>
                         </button>
 
-                        <button onclick="switchTab('spelling-grammar')" id="btn-spelling-grammar" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium">
+                        <button onclick="switchTab('gap-analysis')" id="btn-gap-analysis" class="tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium">
                             <div class="flex items-center gap-2">
-                                <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500 shrink-0"></i>
-                                <span>Spelling & Grammar</span>
+                                <i data-lucide="alert-circle" class="w-4 h-4 text-gray-400 shrink-0"></i>
+                                <span>Missing Keywords Gaps</span>
                             </div>
-                            <span class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full scale-90">2 issues</span>
+                            <span class="text-[10px] {% if missing %}bg-rose-50 text-rose-700 font-bold{% else %}bg-emerald-50 text-emerald-700 font-medium{% endif %} px-2 py-0.5 rounded-full scale-90">
+                                {{ missing|length }} missing
+                            </span>
                         </button>
                     </div>
-
-                    <div class="flex flex-col gap-1 border-t border-gray-100 pt-3">
-                        <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-1 px-1">
-                            <span>Sections Check</span>
-                            <span class="text-amber-600 font-bold bg-amber-50 px-1.5 py-0.5 rounded-xs">69%</span>
-                        </div>
-                        <div class="w-full flex items-center justify-between p-2.5 opacity-60 text-xs text-gray-400 font-medium select-none">
-                            <div class="flex items-center gap-2"><i data-lucide="lock" class="w-3.5 h-3.5"></i> Section Presence</div>
-                            <span class="text-[10px] font-mono">Locked</span>
-                        </div>
-                    </div>
-
                 </div>
 
-                <button class="w-full bg-[#10b981] hover:bg-[#0fa472] text-white font-bold py-3 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer mt-2">
-                    Unlock Full Premium Report <i data-lucide="zap" class="w-3.5 h-3.5 fill-current"></i>
-                </button>
-                <a href="/" class="text-center text-[11px] font-semibold text-blue-600 hover:underline">← Scan another resume</a>
+                <div class="border-t border-gray-100 pt-3 mt-1 flex flex-col gap-2">
+                    <a href="/" class="text-center text-xs font-bold text-blue-600 hover:underline flex items-center justify-center gap-1">
+                        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Scan Another Document
+                    </a>
+                </div>
             </div>
         </section>
 
-        <section class="lg:col-span-8 bg-white border border-gray-200/90 rounded-2xl shadow-xs flex flex-col overflow-hidden min-h-[500px]">
+        <section class="lg:col-span-8 bg-white border border-gray-200 rounded-2xl flex flex-col overflow-hidden shadow-2xs min-h-[550px]">
             
-            <div class="bg-gray-50/80 border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="folder-open" class="text-gray-400 w-4 h-4"></i>
-                    <h3 class="text-xs font-bold text-gray-700 tracking-wide uppercase">Content Assessment Window</h3>
-                </div>
-                <div id="issues-badge" class="text-xs font-semibold text-gray-500 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full shadow-2xs">
-                    Status Normal
-                </div>
+            <div class="bg-gray-50/70 border-b border-gray-200 px-6 py-3.5 flex items-center justify-between">
+                <span class="text-xs font-bold text-gray-500 tracking-wide uppercase flex items-center gap-1.5">
+                    <i data-lucide="terminal" class="w-4 h-4 text-gray-400"></i> Assessment Stream Content View
+                </span>
+                <span id="issues-badge" class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                    Live Telemetry active
+                </span>
             </div>
 
-            <div id="panel-ats-parse" class="tab-content-panel p-6 md:p-8 flex flex-col gap-6">
+            <div id="panel-ats-main" class="tab-content-panel p-6 md:p-8 flex flex-col gap-6">
                 <div>
                     <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="terminal" class="w-4 h-4 text-blue-500"></i> ATS Parse Rate Evaluation
+                        <i data-lucide="activity" class="text-blue-500 w-4 h-4"></i> ATS Alignment Report
                     </h2>
                     <p class="text-xs text-gray-500 mt-2 leading-relaxed">
-                        Employers and recruiters use an <strong class="text-gray-900 font-semibold">Applicant Tracking System (ATS)</strong> to scan job applications at scale. A high parse rate means the system maps data across experience, contact fields, and core skill listings without layout fragmentation blocks.
+                        This metric analyzes the overlapping intersection database threshold ratio between vocabulary extracted across your uploaded file and the structural requirements parsed within your target job criteria window text box.
                     </p>
                 </div>
 
                 <div class="bg-gray-50 rounded-xl p-6 border border-gray-100 flex flex-col gap-4">
                     <div class="w-full bg-gray-200 h-2.5 rounded-full relative overflow-visible mt-2">
-                        <div class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 90%"></div>
-                        <div class="absolute top-1/2 -translate-y-1/2 bg-emerald-600 border-2 border-white w-4 h-4 rounded-full shadow-md" style="left: 90%"></div>
+                        <div class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: {{ ats }}%"></div>
+                        <div class="absolute top-1/2 -translate-y-1/2 bg-emerald-600 border-2 border-white w-4 h-4 rounded-full shadow-md transition-all duration-500" style="left: {{ ats }}%"></div>
                     </div>
                     <div class="text-center mt-2">
-                        <h4 class="text-base font-bold text-gray-900">Great Parsing Health!</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">We parsed 90% of your structural elements cleanly using standard dictionary parsing sequences.</p>
+                        <h4 class="text-base font-bold text-gray-900">{{ ats }}% Match Ratio Achieved</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">Calculated comparing individual intersecting unique string fields.</p>
                     </div>
-                </div>
-
-                <div class="border border-blue-100 bg-blue-50/50 rounded-xl p-4 flex items-start gap-3">
-                    <i data-lucide="lightbulb" class="w-5 h-5 text-blue-500 shrink-0 mt-0.5"></i>
-                    <div>
-                        <h5 class="text-xs font-bold text-blue-900">Enhancv Layout Formatting Alignment Recommended</h5>
-                        <p class="text-xs text-blue-700/90 mt-0.5 leading-relaxed">Build your layout configurations inside an automated canvas system to secure perfect 100% telemetry indexes across complex company parsers.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="panel-quantifying-impact" class="tab-content-panel p-6 md:p-8 flex flex-col gap-6 hidden">
-                <div>
-                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="trending-up" class="w-4 h-4 text-blue-500"></i> Quantifying Achievements & Impact
-                    </h2>
-                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">
-                        Recruiters lean heavily on results. Backing your work history tasks with measurable percentages, revenue points, or scaling numbers shows true execution value.
-                    </p>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-6 border border-gray-100 flex flex-col gap-4">
-                    <div class="w-full bg-gray-200 h-2.5 rounded-full relative overflow-visible mt-2">
-                        <div class="bg-emerald-500 h-full rounded-full" style="width: 80%"></div>
-                        <div class="absolute top-1/2 -translate-y-1/2 bg-emerald-600 border-2 border-white w-4 h-4 rounded-full shadow-md" style="left: 80%"></div>
-                    </div>
-                    <div class="text-center mt-2">
-                        <h4 class="text-base font-bold text-gray-900">Solid Metrics Volume</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">Your action sentences properly utilize numerical anchors across performance descriptions.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="panel-spelling-grammar" class="tab-content-panel p-6 md:p-8 flex flex-col gap-5 hidden">
-                <div>
-                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="type" class="w-4 h-4 text-rose-500"></i> Spelling, Grammar & Syntax Mistakes
-                    </h2>
-                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">
-                        Even small typos can throw off an analysis. Double-check your spelling to ensure clean document formatting.
-                    </p>
                 </div>
 
                 <div class="flex flex-col gap-3">
-                    <div class="flex items-start gap-3 p-3.5 bg-rose-50 border border-rose-100 rounded-xl">
-                        <i data-lucide="help-circle" class="w-4 h-4 text-rose-500 mt-0.5 shrink-0"></i>
-                        <div>
-                            <span class="text-xs font-bold text-rose-900 block">Typo found: "Develper"</span>
-                            <span class="text-xs text-rose-700/90 mt-0.5 block">Context: "...worked as a Senior Frontend Develper inside engineering teams..."</span>
-                            <span class="text-[10px] text-rose-500 bg-white border border-rose-200 px-2 py-0.5 rounded-xs mt-2 inline-block font-semibold">Change to: "Developer"</span>
+                    <h3 class="text-xs font-bold text-gray-700 tracking-wide uppercase flex items-center gap-1">
+                        <i data-lucide="check-square" class="w-4 h-4 text-gray-400"></i> Actionable Suggestions Checklist
+                    </h3>
+                    <div class="flex flex-col gap-2">
+                        {% for tip in tips %}
+                        <div class="flex items-start gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-xs text-gray-600">
+                            <i data-lucide="arrow-right-circle" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i>
+                            <span>{{ tip }}</span>
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
+            </div>
+
+            <div id="panel-skills-db" class="tab-content-panel p-6 md:p-8 flex flex-col gap-5 hidden">
+                <div>
+                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="cpu" class="text-blue-500 w-4 h-4"></i> Identified Global Skills ({{ skills|length }})
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+                        The following verified technical knowledge strings and operational stacks were successfully matched inside your resume document.
+                    </p>
+                </div>
+
+                {% if skills %}
+                <div class="flex flex-wrap gap-2 pt-2">
+                    {% for skill in skills %}
+                    <span class="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100 px-3 py-1 rounded-xl shadow-2xs inline-flex items-center gap-1.5 uppercase tracking-wide">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {{ skill }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-xs text-gray-400">
+                    No technical skills found mapping from the global skill directory.
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="panel-gap-analysis" class="tab-content-panel p-6 md:p-8 flex flex-col gap-5 hidden">
+                <div>
+                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="alert-triangle" class="text-rose-500 w-4 h-4"></i> Targeted Keywords Missing Gap
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+                        These tracking keywords exist inside your pasted job criteria parameters but are not present in your uploaded resume file.
+                    </p>
+                </div>
+
+                {% if missing %}
+                <div class="flex flex-col gap-2.5">
+                    {% for item in missing %}
+                    <div class="flex items-center justify-between p-3.5 bg-rose-50/50 border border-rose-100 rounded-xl text-xs">
+                        <div class="flex items-center gap-2 text-rose-900 font-semibold uppercase tracking-wide">
+                            <i data-lucide="x-circle" class="w-4 h-4 text-rose-500 shrink-0"></i>
+                            <span>{{ item }}</span>
+                        </div>
+                        <span class="text-[10px] bg-white border border-rose-200 text-rose-600 font-bold px-2 py-0.5 rounded-md">Missing Key Skill</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="flex flex-col items-center justify-center text-center py-12 bg-emerald-50/40 border border-emerald-100 rounded-xl p-6">
+                    <i data-lucide="check-check" class="w-8 h-8 text-emerald-500 mb-2"></i>
+                    <h4 class="text-sm font-bold text-emerald-900">Zero Technical Skill Gaps!</h4>
+                    <p class="text-xs text-emerald-700/80 mt-0.5 max-w-sm">Your document structure satisfies all overlapping baseline technical words highlighted within target role criteria.</p>
+                </div>
+                {% endif %}
             </div>
 
         </section>
@@ -224,47 +228,48 @@
     <script>
         lucide.createIcons();
 
-        // Handle Dynamic File Selection Indicator Name Assignment
-        const fileInput = document.getElementById('resume');
-        if(fileInput) {
-            fileInput.addEventListener('change', (e) => {
-                if(e.target.files.length > 0) {
-                    document.getElementById('file-label').textContent = `File Ready: ${e.target.files[0].name}`;
+        // Dynamically track change actions on the native browse file element
+        const inputElement = document.getElementById('resume');
+        if (inputElement) {
+            inputElement.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    document.getElementById('file-label').textContent = `Document Loaded: ${e.target.files[0].name}`;
                     document.getElementById('file-label').classList.add('text-blue-600', 'font-bold');
                 }
             });
         }
 
-        // Active View State Controller Function
+        // Handles switching between reporting panels on user clicks
+         Zion layout modules
         function switchTab(tabId) {
-            // Hide all active descriptive insight panes
+            // Hide all insight report cards
             document.querySelectorAll('.tab-content-panel').forEach(panel => panel.classList.add('hidden'));
             
-            // Remove selection markers from all button objects
+            // Revert all sidebar buttons back to basic inactive styling layouts
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.className = "tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left text-gray-600 hover:bg-gray-50 font-medium";
             });
 
-            # Show selected insight panel card
+            // Make the chosen content card visible
             document.getElementById(`panel-${tabId}`).classList.remove('hidden');
 
-            # Set styling to indicate active button state
+            // Set high-contrast design accent variables to indicate active button focus layout state
             const targetBtn = document.getElementById(`btn-${tabId}`);
             targetBtn.className = "tab-btn w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs text-left bg-blue-50/80 text-blue-700 font-semibold border border-blue-100/50";
             
-            # Dynamically update structural notifications context badge
+            // Adjust current context header tracker text content string
             const badge = document.getElementById('issues-badge');
-            if(tabId === 'spelling-grammar') {
-                badge.textContent = "2 Critical Errors Flagged";
-                badge.className = "text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-2.5 py-0.5 rounded-full";
+            if(tabId === 'gap-analysis') {
+                badge.textContent = "Keyword Gaps Loaded";
+                badge.className = "text-[11px] font-bold text-rose-600 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-md";
+            } else if(tabId === 'skills-db') {
+                badge.textContent = "Technical Inventory Summary";
+                badge.className = "text-[11px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md";
             } else {
-                badge.textContent = "Status Normal";
-                badge.className = "text-xs font-semibold text-gray-500 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full shadow-2xs";
+                badge.textContent = "Live Telemetry active";
+                badge.className = "text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100";
             }
         }
     </script>
 </body>
 </html>
-
-       
-        
