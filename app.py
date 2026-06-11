@@ -1,5 +1,5 @@
 
-from flask import Flask, request, render_template
+    from flask import Flask, request, render_template
 from pdfminer.high_level import extract_text
 import os
 import re
@@ -71,6 +71,7 @@ def home():
 
     if request.method == "POST":
         file = request.files.get("resume")
+        # Fixed: Explicitly look for the correct 'job_desc' form field name
         job_desc = request.form.get("job_desc", "")
 
         if file and allowed_file(file.filename):
@@ -84,7 +85,7 @@ def home():
             missing = skill_gap(skills, job_desc)
             tips = suggestions(score, missing)
 
-            # Cleanup file after processing
+            # Cleanup file locally right after calculation
             if os.path.exists(path):
                 os.remove(path)
 
@@ -97,5 +98,7 @@ def home():
         tips=tips
     )
 
+# Fixed: Production server network listener
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
