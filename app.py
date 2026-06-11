@@ -1,5 +1,5 @@
 
-   from flask import Flask, request, render_template
+from flask import Flask, request, render_template
 from pdfminer.high_level import extract_text
 import os
 import re
@@ -12,13 +12,14 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {'pdf'}
 
 skills_db = [
-    "python", "java", "c++", "javascript", "html", "css", "react", "node", 
-    "flask", "django", "sql", "mongodb", "machine learning", "data science", 
+    "python", "java", "c++", "javascript", "html", "css", "react", "node",
+    "flask", "django", "sql", "mongodb", "machine learning", "data science",
     "deep learning", "tensorflow", "git", "docker", "rest api"
 ]
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def extract_skills(text):
     text = text.lower()
@@ -59,14 +60,14 @@ def suggestions(score, missing):
     tips.append("Mention measurable achievements in projects.")
     return tips
 
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     skills = []
-    score = 0
-    ats = 0
+    score = None
+    ats = None
     missing = []
     tips = []
-    analyzed = False
 
     if request.method == "POST":
         file = request.files.get("resume")
@@ -76,16 +77,14 @@ def home():
             path = os.path.join(UPLOAD_FOLDER, file.filename)
             file.save(path)
 
-            # Process resume text and apply your metrics logic
             text = extract_text(path)
             skills = extract_skills(text)
             score = resume_score(skills)
             ats = ats_score(text, job_desc)
             missing = skill_gap(skills, job_desc)
             tips = suggestions(score, missing)
-            analyzed = True
 
-            # Clean up saved file after processing
+            # Cleanup file after processing
             if os.path.exists(path):
                 os.remove(path)
 
@@ -95,8 +94,7 @@ def home():
         score=score,
         ats=ats,
         missing=missing,
-        tips=tips,
-        analyzed=analyzed
+        tips=tips
     )
 
 if __name__ == "__main__":
